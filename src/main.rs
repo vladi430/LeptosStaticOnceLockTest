@@ -1,6 +1,11 @@
+
+pub mod oncelock;
+
 #[cfg(feature = "ssr")]
 #[actix_web::main]
 async fn main() -> std::io::Result<()> {
+    use std::sync::Arc;
+
     use actix_files::Files;
     use actix_web::*;
     use leptos::prelude::*;
@@ -8,6 +13,11 @@ async fn main() -> std::io::Result<()> {
     use leptos_meta::MetaTags;
     use leptos_actix::{generate_route_list, LeptosRoutes};
     use initializing_oncelock::app::*;
+
+
+    // init oncelock
+    oncelock::connection_pool::CONNECTION_POOL.set(Arc::new(42)).expect("Connection pool failed to initialize!");
+
 
     let conf = get_configuration(None).unwrap();
     let addr = conf.leptos_options.site_addr;
